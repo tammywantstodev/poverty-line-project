@@ -1,0 +1,59 @@
+.navbar {
+    width: 100%;
+    background-color: #11998e;
+    padding: 10px 20px;
+    padding-right: 5px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: fixed; 
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    
+  }
+  
+  
+  .navbar-logo {
+    background-color: #000;
+    color: white;
+    padding: 6px 14px;
+    border-radius: 9999px;
+    font-weight: bold;
+    text-decoration: none;
+    font-size: 16px;
+  }
+  
+  .navbar-links {
+    max-width: 100%;
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    padding-right: 50px;
+  }
+  
+  .navbar-icon svg {
+    width: 24px;
+    height: 24px;
+    fill: #000;
+  }
+  
+  .navbar-link {
+    background-color: #000;
+    color: white;
+    padding: 6px 12px;
+    border-radius: 9999px;
+    font-weight: bold;
+    text-decoration: none;
+  }
+  
+  .navbar-cta {
+    background-color: #000;
+    color: white;
+    padding: 6px 12px;
+    border-radius: 9999px;
+    font-size: 12px;
+    text-decoration: none;
+    font-weight: bold;
+  }
+  

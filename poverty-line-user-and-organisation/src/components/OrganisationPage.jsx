@@ -1,5 +1,6 @@
 import '../styles/OrganisationPage.css';
 import React, { useState, useEffect } from 'react';
+import Navbar from './Navbar';
 import Select from 'react-select';
 
 
@@ -51,6 +52,7 @@ function OrganizationPage() {
 
   return (
     <div>
+      <Navbar/>
       <h1>Organization Dashboard</h1>
       <h2>User Profiles</h2>
       <div className="filters">
