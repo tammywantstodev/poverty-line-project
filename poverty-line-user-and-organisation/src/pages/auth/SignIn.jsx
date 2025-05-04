@@ -9,10 +9,38 @@ const SignIn = () => {
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     console.log({ userType, email, password, rememberMe });
     // Would handle authentication here
+    try {
+      const response = await fetch('http://localhost:5000/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+      });
+  
+      const data = await response.json();
+  
+      if (data.access_token) {
+        localStorage.setItem('jwtToken', data.access_token);
+  
+        const tokenPayload = JSON.parse(atob(data.access_token.split('.')[1]));
+        const role = tokenPayload.user_type;
+  
+        if (role === 'admin') {
+          window.location.href = '/adminpage';
+        } else if (role === 'organization') {
+          window.location.href = '/organizationpage';
+        } else {
+          window.location.href = '/userpage';
+        }
+      } else {
+        alert('Invalid credentials');
+      }
+    } catch (err) {
+      console.error('Login error:', err);
+    }
   };
 
   return (

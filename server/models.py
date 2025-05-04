@@ -1,7 +1,3 @@
-
-# This file defines all the database models used in the Poverty Line Project.
-# We're using Flask-SQLAlchemy to interact with a PostgreSQL database.
-
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 
@@ -14,7 +10,7 @@ class User(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)  # Unique identifier
     email = db.Column(db.String(120), unique=True, nullable=False)  # Email must be unique
-    password_hash = db.Column(db.String(128), nullable=False)  # Password is hashed, never stored in plain text
+    password_hash = db.Column(db.String(256), nullable=False)  # Password is hashed, never stored in plain text
 
     # Basic demographic fields used for analysis and ML recommendations
     gender = db.Column(db.String(10))
@@ -45,7 +41,8 @@ class Stakeholder(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     organization_name = db.Column(db.String(150), nullable=False)
     contact_email = db.Column(db.String(120), unique=True, nullable=False)
-    password_hash = db.Column(db.String(128), nullable=False)
+    password_hash = db.Column(db.String(256), nullable=False)
+    sector_focus = db.Column(db.String(100))
 
     # Whether this stakeholder has been approved by an admin
     approved = db.Column(db.Boolean, default=False)
@@ -69,29 +66,28 @@ class Program(db.Model):
     type = db.Column(db.String(50))  # What type of program (job, training, etc.)
     eligibility = db.Column(db.String(250))  # Short eligibility requirements
     location = db.Column(db.String(100))  # Where the program is located
-
+    region = db.Column(db.String, nullable=False)
     # Foreign key to stakeholder who created this program
-    stakeholder_id = db.Column(db.Integer, db.ForeignKey('stakeholders.id'), nullable=False)
+    posted_by_id = db.Column(db.Integer, db.ForeignKey('stakeholders.id'), nullable=False)
 
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
-
 # Stores ML-generated suggestions for the user: relevant jobs, programs, etc.
-# class Recommendation(db.Model):
-#     __tablename__ = 'recommendations'
+class Recommendation(db.Model):
+    __tablename__ = 'recommendations'
 
-#     id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True)
 
-#     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
-#     program_id = db.Column(db.Integer, db.ForeignKey('programs.id'), nullable=True)  # Optional: may be null
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    program_id = db.Column(db.Integer, db.ForeignKey('programs.id'), nullable=True)  # Optional: may be null
 
-#     # A numerical score from ML, indicating how relevant this recommendation is
-#     score = db.Column(db.Float)
+    # A numerical score from ML, indicating how relevant this recommendation is
+    score = db.Column(db.Float)
 
-#     # Type of recommendation: job, training, or protection (used for filtering)
-#     type = db.Column(db.String(50))
+    # Type of recommendation: job, training, or protection (used for filtering)
+    type = db.Column(db.String(50))
 
-#     created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
 
 
@@ -114,5 +110,5 @@ class Admin(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(120), unique=True, nullable=False)
-    password_hash = db.Column(db.String(128), nullable=False)
+    password_hash = db.Column(db.String(256), nullable=False)
 
