@@ -1,8 +1,10 @@
 
-import React, { useState } from 'react';
+import React, { useState} from 'react';
+import { useNavigate } from 'react-router-dom';
 import AuthLayout from '@/components/auth/AuthLayout';
 
 const SignUp = () => {
+  const navigate = useNavigate();
   const [userType, setUserType] = useState('individual');
   const [formData, setFormData] = useState({
     // Common fields
@@ -43,13 +45,15 @@ const SignUp = () => {
         headers: {
           'Content-Type': 'application/json',
         },
+        credentials: 'include',
         body: JSON.stringify(dataToSend),
       });
   
       if (res.ok) {
         const data = await res.json();
         console.log('Signup success:', data);
-        // maybe redirect or clear form
+        // redirect to sign in
+        navigate('/auth/signin');
       } else {
         const err = await res.json();
         console.error('Signup error:', err);

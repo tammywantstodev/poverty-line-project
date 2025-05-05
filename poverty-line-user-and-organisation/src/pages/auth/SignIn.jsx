@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import AuthLayout from '@/components/auth/AuthLayout';
+import { login } from '../../api';
 
 const SignIn = () => {
   const [userType, setUserType] = useState('individual');
@@ -14,13 +15,7 @@ const SignIn = () => {
     console.log({ userType, email, password, rememberMe });
     // Would handle authentication here
     try {
-      const response = await fetch('http://localhost:5000/api/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
-      });
-  
-      const data = await response.json();
+      const data = await login({ email, password });
   
       if (data.access_token) {
         localStorage.setItem('jwtToken', data.access_token);
@@ -29,11 +24,11 @@ const SignIn = () => {
         const role = tokenPayload.user_type;
   
         if (role === 'admin') {
-          window.location.href = '/adminpage';
+          window.location.href = '/dashboard/admin';
         } else if (role === 'organization') {
-          window.location.href = '/organizationpage';
+          window.location.href = '/dashboard/organization';
         } else {
-          window.location.href = '/userpage';
+          window.location.href = '/dashboard/user';
         }
       } else {
         alert('Invalid credentials');

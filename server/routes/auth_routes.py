@@ -1,12 +1,15 @@
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import create_access_token, jwt_required
-from werkzeug.security import generate_password_hash, check_password_hash
-from models import db, User 
+from models import db, User
+import bcrypt  
 
 auth_bp = Blueprint('auth_bp', __name__)
 
-# The signup Route@auth_bp.route('/signup', methods=['POST'])
+# The signup Route
+@auth_bp.route('/signup', methods=['POST', 'OPTIONS'])
 def signup():
+    if request.method == 'OPTIONS':
+        return jsonify({"status": "ok"}), 200
     try:
         data = request.get_json()
         print("Received data:", data)
@@ -19,11 +22,13 @@ def signup():
         if User.query.filter_by(email=data['email']).first():
             return jsonify({"msg": "User already exists!"}), 400
 
-        # Create user
-        hashed_password = generate_password_hash(data['password'], method='sha256')
+        # Hash the password using bcrypt
+        hashed_password = bcrypt.hashpw(data['password'].encode('utf-8'), bcrypt.gensalt())
+
+        # Create new user
         new_user = User(
             email=data['email'],
-            password=hashed_password,
+            password_hash=hashed_password.decode('utf-8'),  # store as string
             user_type=data.get('user_type', 'individual')
         )
         db.session.add(new_user)
@@ -41,25 +46,21 @@ def signup():
 @auth_bp.route('/login', methods=['POST'])
 def login():
     data = request.get_json()
-    
-    # Check if email and password are provided
+
     if not data.get('email') or not data.get('password'):
         return jsonify({"msg": "Email and password are required!"}), 400
-    
-    # Find the user by email
+
+    # Find user by email
     user = User.query.filter_by(email=data['email']).first()
 
-    # Validate user and password
-    if user and check_password_hash(user.password, data['password']):
-        # Create a JWT token
+    if user and bcrypt.checkpw(data['password'].encode('utf-8'), user.password_hash.encode('utf-8')):
         access_token = create_access_token(identity={'email': user.email, 'user_type': user.user_type})
         return jsonify(access_token=access_token), 200
     else:
         return jsonify({"msg": "Invalid email or password!"}), 401
 
-# Protecting other routes
+# Protected route
 @auth_bp.route('/protected', methods=['GET'])
 @jwt_required()
 def protected():
-    # This route is protected, and only accessible with a valid JWT token
     return jsonify(message="This route is protected!")

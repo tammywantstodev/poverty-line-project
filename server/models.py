@@ -10,8 +10,8 @@ class User(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)  # Unique identifier
     email = db.Column(db.String(120), unique=True, nullable=False)  # Email must be unique
-    password_hash = db.Column(db.String(256), nullable=False)  # Password is hashed, never stored in plain text
-
+    password_hash = db.Column(db.String(128), nullable=False)  # Password is hashed, never stored in plain text
+    user_type = db.Column(db.String(50), nullable=False, default='individual') 
     # Basic demographic fields used for analysis and ML recommendations
     gender = db.Column(db.String(10))
     location = db.Column(db.String(100))
@@ -23,7 +23,7 @@ class User(db.Model):
     profile_completed = db.Column(db.Boolean, default=False)
 
     # Risk score predicted by the ML model (e.g., 0.82 = high risk)
-    poverty_risk_score = db.Column(db.Float)
+    #poverty_risk_score = db.Column(db.Float)
 
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
@@ -41,7 +41,7 @@ class Stakeholder(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     organization_name = db.Column(db.String(150), nullable=False)
     contact_email = db.Column(db.String(120), unique=True, nullable=False)
-    password_hash = db.Column(db.String(256), nullable=False)
+    password_hash = db.Column(db.String(128), nullable=False)
     sector_focus = db.Column(db.String(100))
 
     # Whether this stakeholder has been approved by an admin
@@ -49,7 +49,6 @@ class Stakeholder(db.Model):
 
     # Region they operate in (used for filtering/searching)
     region = db.Column(db.String(100))
-
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
     # One-to-many relationship: an org can offer multiple programs
@@ -110,5 +109,5 @@ class Admin(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(120), unique=True, nullable=False)
-    password_hash = db.Column(db.String(256), nullable=False)
+    password_hash = db.Column(db.String(128), nullable=False)
 

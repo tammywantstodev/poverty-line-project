@@ -3,10 +3,12 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_jwt_extended import JWTManager
 from flask_cors import CORS
 from config import Config
+from flask_migrate import Migrate
+from models import db
 
 # We initialize the extensions to be used
-db = SQLAlchemy()
 jwt = JWTManager()
+migrate = Migrate()
 
 def create_app():
     app = Flask(__name__)
@@ -18,6 +20,7 @@ def create_app():
          allow_headers=["Content-Type", "Authorization"])
     db.init_app(app)
     jwt.init_app(app)
+    migrate.init_app(app, db)
 
    # Import and register blueprints
     from routes.auth_routes import auth_bp
