@@ -1,17 +1,15 @@
 from flask import Blueprint, jsonify
-from models import User
+from flask_jwt_extended import jwt_required, get_jwt_identity
+from utils.decorators import role_required
 
-user_routes = Blueprint('user_routes', __name__)
+individual_bp = Blueprint("user", __name__)
 
-# Get user profile by ID
-@user_routes.route('/api/users/<int:user_id>', methods=['GET'])
-def get_user_profile(user_id):
-    user = User.query.get_or_404(user_id)
-    user_profile = {
-        "id": user.id,
-        "name": user.name,
-        "age": user.age,
-        "location": user.location,
-        "poverty_risk": user.poverty_risk
-    }
-    return jsonify(user_profile)
+# Example of a protected route for individuals
+@individual_bp.route("/dashboard", methods=["GET"])
+@jwt_required()
+@role_required("user")
+def user_dashboard():
+    current_user = get_jwt_identity()  # Get user data from the JWT token
+    if current_user['user_type'] != 'individual':
+        return jsonify({"msg": "Access forbidden for this user type!"}), 403
+    return jsonify(msg="Welcome to the user dashboard")

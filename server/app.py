@@ -1,36 +1,57 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
+from flask_jwt_extended import JWTManager
+from flask_cors import CORS
+from config import Config
 from flask_migrate import Migrate
-
-# Import our models and database instance
 from models import db
 
-# This sets up the app and loads the configuration for our database.
-app = Flask(__name__)
+# We initialize the extensions to be used
+jwt = JWTManager()
+migrate = Migrate()
 
-# Format: 'postgresql://<username>:<password>@<host>:<port>/<database>'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:empty@localhost:5432/povertyline'
+def create_app():
+    app = Flask(__name__)
+    app.config.from_object(Config)
+ 
+    # Then iniialize the extensions with app
+    CORS(app, resources={r"/api/*": {"origins": "http://localhost:8080"}}, 
+         supports_credentials=True, 
+         allow_headers=["Content-Type", "Authorization"])
+    db.init_app(app)
+    jwt.init_app(app)
+    migrate.init_app(app, db)
 
-# This keeps things quiet; it prevents overhead tracking of every change.
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+   # Import and register blueprints
+    from routes.auth_routes import auth_bp
+    from routes.user_routes import individual_bp
+    from routes.org_routes import org_bp
+    from routes.admin_routes import admin_bp
 
-# For session and security purposes. Store this in .env for production.
-app.secret_key = 'dev-secret-key'
+    app.register_blueprint(auth_bp, url_prefix='/api/auth')
+    app.register_blueprint(individual_bp, url_prefix='/api/user')
+    app.register_blueprint(org_bp, url_prefix='/api/org')
+    app.register_blueprint(admin_bp, url_prefix='/api/admin')
 
-# Initialize the DB and Migrations
-db.init_app(app)
-migrate = Migrate(app, db)
+    return app
 
-# This is a simple landing route to test the server.
-@app.route('/')
-def index():
-    return "Welcome to the Poverty Line Project!"
-
-# These create the tables
-with app.app_context():
-    db.create_all()
-
-# Run the Flask dev server (use gunicorn for production).
 if __name__ == '__main__':
-    # Turn on debug mode for dev; turn off in production
+    app = create_app()
     app.run(debug=True)
+
+# # Initialize the DB and Migrations
+# db.init_app(app)
+# migrate = Migrate(app, db)
+
+# # This is a simple landing route to test the server.
+# @app.route('/')
+# def index():
+#     return "Welcome to the Poverty Line Project!"
+
+# # These create the tables
+# with app.app_context():
+#     db.create_all()
+
+# if __name__ == '__main__':
+#     # Turn on debug mode for dev; turn off in production
+#     app.run(debug=True)

@@ -1,8 +1,10 @@
 
-import React, { useState } from 'react';
+import React, { useState} from 'react';
+import { useNavigate } from 'react-router-dom';
 import AuthLayout from '@/components/auth/AuthLayout';
 
 const SignUp = () => {
+  const navigate = useNavigate();
   const [userType, setUserType] = useState('individual');
   const [formData, setFormData] = useState({
     // Common fields
@@ -26,10 +28,39 @@ const SignUp = () => {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     console.log({ userType, formData });
     // Would handle user registration here
+
+    const dataToSend = {
+      email: formData.email,
+      password: formData.password,
+      user_type: userType,
+    };
+    
+    try {
+      const res = await fetch('http://localhost:5000/api/auth/signup', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+        body: JSON.stringify(dataToSend),
+      });
+  
+      if (res.ok) {
+        const data = await res.json();
+        console.log('Signup success:', data);
+        // redirect to sign in
+        navigate('/auth/signin');
+      } else {
+        const err = await res.json();
+        console.error('Signup error:', err);
+      }
+    } catch (err) {
+      console.error('Something went wrong:', err);
+    }
   };
 
   return (
