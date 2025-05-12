@@ -57,7 +57,7 @@ legend {
 }
 
 .btn, .submit {
-    background-color: #ff6b00;
+    background-color: #0D9488;
     border: none;
     color: white;
     padding: 10px 20px;
@@ -68,7 +68,7 @@ legend {
 }
 
 .btn:hover, .submit:hover {
-    background-color: #e65a00;
+    background-color: #0a9287;
 }
 
 .text-danger {

@@ -2,12 +2,15 @@ from flask import Flask, render_template, redirect, url_for, flash, request, jso
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager, login_user, current_user, logout_user, login_required
 from flask_cors import CORS
+from flask_migrate import Migrate
 
-from models import db, User, UserProfile
+
+from models import db, User, UserProfile, Job, JobApplication
 from forms import RegistrationForm, LoginForm, UpdateAccountForm
 
 app = Flask(__name__)
-CORS(app,supports_credentials=True)
+migrate = Migrate(app, db)
+CORS(app, supports_credentials=True, origins=["http://localhost:5173"])
 
 app.config['SECRET_KEY'] = '860161b45d69b1c3a46aef53a0342eabd737bbcf997812f6252a3759defc084b'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
@@ -54,11 +57,11 @@ def login():
             session['user_id'] = user.id
             # Check the user's role and redirect accordingly
             if user.role == 'user':
-                return redirect('http://localhost:5173/userpage')  # Redirect to user-specific page
+                return redirect('http://localhost:8080/dashboard/user')  # Redirect to user-specific page
             elif user.role == 'org':
-                return redirect('http://localhost:5173/organisationpage')  # Redirect to organization-specific page
+                return redirect('http://localhost:8080/dashboard/organization')  # Redirect to organization-specific page
             else:
-                return redirect('http://localhost:5173')  # Default landing page if role doesn't match
+                return redirect('http://localhost:8080/')  # Default landing page if role doesn't match
         else:
             flash('Login unsuccessful. Check your email and password.', 'danger')
     
@@ -133,8 +136,81 @@ def get_organization_data():
     return jsonify({"profiles": result}) 
 
 
+@app.route('/post_job', methods=['POST'])
+def post_job():
+    data = request.get_json()
+    job = Job(
+        title=data.get('title'),
+        description=data.get('description'),
+        location=data.get('location'),
+        salary=data.get('salary'),
+    )
+    db.session.add(job)
+    db.session.commit()
+
+    return jsonify({'message': 'Job posted successfully'}), 201
+
+@app.route('/get_jobs', methods=['GET'])
+def get_jobs():
+    jobs = Job.query.all()
+    job_list = []
+    for job in jobs:
+        job_list.append({
+            'id': job.id,
+            'title': job.title,
+            'description': job.description,
+            'location': job.location,
+            'salary': job.salary,
+        })
+    return jsonify(job_list)
+
     
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()
     app.run(debug=True)
+
+
+@app.route('/apply', methods=['POST', 'OPTIONS'])  # ← add 'OPTIONS'
+def apply_job():
+    if request.method == 'OPTIONS':
+        response = jsonify({'message': 'Preflight request accepted'})
+        response.headers.add('Access-Control-Allow-Origin', 'http://localhost:5173') 
+        response.headers.add('Access-Control-Allow-Credentials', 'true')
+        response.headers.add('Access-Control-Allow-Headers', 'Content-Type')
+        response.headers.add('Access-Control-Allow-Methods', 'POST, OPTIONS')
+        return '', 204
+    if not current_user.is_authenticated:
+        return jsonify({'error': 'Authentication required'}), 401
+
+    data = request.get_json()
+    job_id = data.get('jobId')
+
+    if not job_id:
+        return jsonify({'error': 'Job ID is required'}), 400
+
+    existing_application = JobApplication.query.filter_by(user_id=current_user.id, job_id=job_id).first()
+    if existing_application:
+        return jsonify({'message': 'Already applied'}), 400
+
+    application = JobApplication(user_id=current_user.id, job_id=job_id)
+    db.session.add(application)
+    db.session.commit()
+
+    return jsonify({'message': 'Application submitted successfully'}), 201
+
+
+@app.route('/get_applications', methods=['GET'])
+def get_applications():
+    applications = JobApplication.query.all()
+    result = []
+    for application in applications:
+        result.append({
+            'id': application.id,
+            'username': application.user.username,
+            'email': application.user.email,
+            'job_title': application.job.title,
+            'job_id': application.job.id,
+            'timestamp': application.timestamp.strftime('%Y-%m-%d %H:%M:%S'),
+        })
+    return jsonify(result)
