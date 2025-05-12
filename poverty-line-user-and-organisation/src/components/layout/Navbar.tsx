@@ -39,40 +39,16 @@ const Navbar: React.FC = () => {
             <Link to="/about" className="text-gray-600 hover:text-primary transition-colors">
               About
             </Link>
-            <div className="relative" onMouseEnter={() => setIsDropdownOpen(true)} onMouseLeave={() => setIsDropdownOpen(false)}>
-              <button 
-                className="flex items-center text-gray-600 hover:text-primary focus:outline-none transition-colors"
-                onClick={toggleDropdown}
-              >
-                Dashboards
-                <ChevronDown size={16} className="ml-1" />
-              </button>
-              {isDropdownOpen && (
-                <div className="absolute z-10 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
-                  <div className="py-1">
-                    <Link to="/dashboard/user" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                      Individual Dashboard
-                    </Link>
-                    <Link to="/dashboard/organization" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                      Organization Dashboard
-                    </Link>
-                    <Link to="/dashboard/admin" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                      Admin Dashboard
-                    </Link>
-                  </div>
-                </div>
-              )}
-            </div>
           </div>
 
           {/* Auth Buttons */}
           <div className="hidden md:flex items-center space-x-3">
-            <Link to="/auth/signin" className="px-4 py-1.5 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-100 transition-colors">
+            <a href="http://localhost:5000/login" className="px-4 py-1.5 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-100 transition-colors">
               Sign In
-            </Link>
-            <Link to="/auth/signup" className="btn-primary">
+            </a>
+            <a href="http://localhost:5000/register" className="btn-primary">
               Join Now
-            </Link>
+            </a>
           </div>
 
           {/* Mobile menu button */}
