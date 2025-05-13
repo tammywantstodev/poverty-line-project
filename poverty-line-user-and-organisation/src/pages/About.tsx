@@ -1,6 +1,5 @@
 
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
 
 // Partner Logos (using placeholder data)
 const partners = [
@@ -269,12 +268,12 @@ const About: React.FC = () => {
             Be part of the solution. Create an account to join our community of changemakers.
           </p>
           <div className="flex flex-col sm:flex-row justify-center gap-4">
-            <Link to="/auth/signup" className="bg-white text-primary hover:bg-gray-100 font-semibold py-3 px-8 rounded-lg transition duration-200 ease-in-out text-lg">
+            <a href="http://localhost:5000/register"className="bg-white text-primary hover:bg-gray-100 font-semibold py-3 px-8 rounded-lg transition duration-200 ease-in-out text-lg">
               Create an Account
-            </Link>
-            <Link to="/auth/signin" className="bg-transparent border-2 border-white text-white hover:bg-white/10 font-semibold py-3 px-8 rounded-lg transition duration-200 ease-in-out text-lg">
+            </a>
+            <a href="http://localhost:5000/login" className="bg-transparent border-2 border-white text-white hover:bg-white/10 font-semibold py-3 px-8 rounded-lg transition duration-200 ease-in-out text-lg">
               Sign In
-            </Link>
+            </a>
           </div>
         </div>
       </section>

@@ -208,9 +208,6 @@ const Home: React.FC = () => {
             Join our community today to help map poverty and create meaningful change in your area.
           </p>
           <div className="flex flex-col sm:flex-row justify-center gap-4">
-            <Link to="/auth/signup" className="bg-white text-primary hover:bg-gray-100 font-semibold py-3 px-8 rounded-lg transition duration-200 ease-in-out text-lg">
-              Join Now
-            </Link>
             <Link to="/about" className="bg-transparent border-2 border-white text-white hover:bg-white/10 font-semibold py-3 px-8 rounded-lg transition duration-200 ease-in-out text-lg">
               Learn More
             </Link>

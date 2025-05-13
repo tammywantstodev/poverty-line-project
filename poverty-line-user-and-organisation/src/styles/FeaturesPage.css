@@ -1,0 +1,36 @@
+.features-page {
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 20px;
+    background-color: #E0F2F1;
+    border-radius: 25px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.features-title {
+    font-size: 40px;
+    color: #004d40;
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.feature-section {
+    margin-bottom: 30px;
+    padding: 20px;
+    background-color: #ffffff;
+    border-radius: 15px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.feature-section h2 {
+    color: #00796b;
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+.feature-section p {
+    font-family: "Cascadia Code", sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+    color:#00796b
+}

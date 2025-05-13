@@ -1,6 +1,7 @@
-
+import LogoutButton from '../../components/layout/LogoutButton'
 import React, { useState } from 'react';
 import { MapPin, Filter, Users, Search, ArrowRight } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 // Mock data for organization profile
 const organizationProfile = {
@@ -195,6 +196,7 @@ const OrganizationDashboard: React.FC = () => {
   
   return (
     <div className="page-container">
+      <LogoutButton/>
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Left Column: Organization Profile & Programs */}
         <div className="lg:col-span-1">
@@ -206,7 +208,6 @@ const OrganizationDashboard: React.FC = () => {
                 Edit
               </button>
             </div>
-            
             <div className="space-y-4">
               <div>
                 <h3 className="font-medium text-lg">{organizationProfile.name}</h3>

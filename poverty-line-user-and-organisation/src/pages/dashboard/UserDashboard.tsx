@@ -1,4 +1,4 @@
-
+import LogoutButton from '../../components/layout/LogoutButton'
 import React, { useState } from 'react';
 import { ArrowRight, Pencil } from 'lucide-react';
 
@@ -136,6 +136,8 @@ const UserDashboard: React.FC = () => {
                 </button>
               )}
             </div>
+            <LogoutButton/>
+
             
             {/* Profile Completion */}
             <div className="mb-6">
@@ -235,7 +237,7 @@ const UserDashboard: React.FC = () => {
                     ))}
                   </select>
                 </div>
-                
+
                 <div>
                   <label htmlFor="urgentNeed" className="form-label">Most Urgent Need</label>
                   <select
