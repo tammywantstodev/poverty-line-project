@@ -26,17 +26,16 @@ const App = () => {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    axios
-      .get("http://localhost:5000/api/current_user")
-      .then((res) => {
-        if (res.data.authenticated) {
-          setUser(res.data.user);
-        } else {
-          setUser(null);
-        }
-      })
-      .catch((err) => console.error(err));
-  }, []);
+  fetch('http://localhost:5000/api/current_user', { credentials: 'include' })
+    .then(res => res.json())
+    .then(data => {
+      console.log("Fetched user:", data); // 👈 Add this
+      setUser(data.user);
+    })
+    .catch(err => {
+      console.error("Error fetching user:", err);
+    });
+}, []);
 
   return (
     <QueryClientProvider client={queryClient}>

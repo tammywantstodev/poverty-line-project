@@ -1,11 +1,15 @@
 import { Link } from 'react-router-dom';
 import '../styles/Navbar.css';
-import LogoutButton from './LogoutButton.jsx';
 
 
 export default function Navbar({user}) {
   const location = useLocation();
-  const showLogout = ['/dashboard', '/profile'].includes(location.pathname);
+  const handleClick = () => {
+    window.location.href = 'http://localhost:5000/account'; 
+  };
+  const handleSignin = () => {
+    window.location.href = 'http://localhost:5000/login'; 
+  };
   return (
     <nav className="navbar">
       <Link to="/" className="navbar-logo">PovAware</Link>
@@ -15,13 +19,9 @@ export default function Navbar({user}) {
         <Link to="/features" className="navbar-link">Features</Link>
         <Link to="/joblistings" className="navbar-link">Find Jobs</Link>
         {user ? (
-        <Link to="/dashboard/user">
-          <button>Account</button>
-        </Link>
+        <button onClick={handleClick}>Account</button>
       ) : (
-        <Link to="/auth/signin">
-          <button>Sign In</button>
-        </Link>
+        <button onClick={handleSignin}>Signin</button>
       )}
       </div>
     </nav>

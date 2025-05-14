@@ -10,7 +10,7 @@ from forms import RegistrationForm, LoginForm, UpdateAccountForm
 
 app = Flask(__name__)
 migrate = Migrate(app, db)
-CORS(app, supports_credentials=True,  origins=['http://localhost:8080'])
+CORS(app, supports_credentials=True,  origins=['http://localhost:8080','http://localhost:5000'])
 
 app.config['SECRET_KEY'] = '860161b45d69b1c3a46aef53a0342eabd737bbcf997812f6252a3759defc084b'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
@@ -70,12 +70,9 @@ def login():
 @app.route('/api/current_user')
 def get_current_user():
     if current_user.is_authenticated:
-        return jsonify({
-            'authenticated': True,
-            'username': current_user.username,  # or user ID, email, etc.
-        })
+        return jsonify(user=current_user.to_dict())  # Your user serializer
     else:
-        return jsonify({'authenticated': False})
+        return jsonify(user=None), 200 
 
 @app.route('/logout', methods=['POST'])
 def logout():

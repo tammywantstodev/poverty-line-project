@@ -193,9 +193,14 @@ const OrganizationDashboard: React.FC = () => {
       setShowNewProgramForm(false);
     }
   };
+   const handleClick = () => {
+    window.location.href = 'http://localhost:5000/account'; 
+  };
   
   return (
     <div className="page-container">
+      <button className="text-sm border border-gray-300 px-4 py-2 rounded-md hover:bg-gray-100 transition m-2"
+            onClick={handleClick}>Account</button>
       <LogoutButton/>
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Left Column: Organization Profile & Programs */}

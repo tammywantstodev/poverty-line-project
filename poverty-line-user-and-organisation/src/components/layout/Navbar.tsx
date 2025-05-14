@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { Menu, X } from 'lucide-react';
-import LogoutButton from './LogoutButton'
+import LogoutButton from './LogoutButton';
 
 interface NavbarProps {
   user: any;
@@ -9,10 +9,22 @@ interface NavbarProps {
 
 const Navbar: React.FC<NavbarProps> = ({ user }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const location = useLocation();  // Access the current location
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
+
+  const handleClick = () => {
+    window.location.href = 'http://localhost:5000/account'; 
+  };
+
+  const handleSignin = () => {
+    window.location.href = 'http://localhost:5000/login'; 
+  };
+
+  // Check if the current path is one of the user or organization pages
+  const isUserOrOrganizationPage = location.pathname.includes('/dashboard/user') || location.pathname.includes('/dashboard/organization');
 
   return (
     <nav className="bg-white shadow-sm">
@@ -44,19 +56,11 @@ const Navbar: React.FC<NavbarProps> = ({ user }) => {
           <div className="hidden md:flex items-center space-x-3">
             {user ? (
               <>
-              <a href='http://localhost:5000/account'>
-                <button className="text-sm bg-primary text-white px-4 py-2 rounded-md hover:bg-primary/90 transition">
-                  Account
-                </button>
-              </a>
-              <LogoutButton />
+                <button onClick={handleClick}>Account</button>
+                <LogoutButton />
               </>
-            ) : (
-              <a href="http://localhost:5000/login">
-                <button className="text-sm border border-gray-300 px-4 py-2 rounded-md hover:bg-gray-100 transition">
-                  Sign In
-                </button>
-              </a>
+            ) : !isUserOrOrganizationPage && (  // Check if not on user/org pages
+              <button onClick={handleSignin} className="text-sm border border-gray-300 px-4 py-2 rounded-md hover:bg-gray-100 transition m-2">Signin</button>
             )}
           </div>
 
@@ -120,40 +124,11 @@ const Navbar: React.FC<NavbarProps> = ({ user }) => {
             <div className="pt-4 flex flex-col space-y-2">
               {user ? (
                 <>
-                <a href='http://localhost:5000/account'
-                  className="w-full text-center px-4 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-100"
-                  onClick={toggleMenu}
-                >
-                  Account
-                </a>
-                  <button
-      onClick={() => {
-        toggleMenu();
-        fetch('http://localhost:5000/logout', {
-          method: 'POST',
-          credentials: 'include',
-        }).then(() => window.location.href = '/login');
-      }}
-      className="w-full text-center px-4 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-100"
-    >
-      Logout
-    </button>
-  </>
-              ) : (
-                <>
-                  <a href="http://localhost:5000/login"
-                    className="w-full text-center px-4 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-100"
-                    onClick={toggleMenu}
-                  >
-                    Sign In
-                  </a>
-                  <a href="http://localhost:5000/register"
-                    className="w-full text-center btn-primary"
-                    onClick={toggleMenu}
-                  >
-                    Join Now
-                  </a>
+                  <button onClick={handleClick}>Account</button>
+                  <LogoutButton />
                 </>
+              ) : !isUserOrOrganizationPage && (
+                <button onClick={handleSignin} className="text-sm border border-gray-300 px-4 py-2 rounded-md hover:bg-gray-100 transition m-2">Signin</button>
               )}
             </div>
           </div>
